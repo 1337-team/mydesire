@@ -1,17 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
-interface CounterState {
-    currentCount: number;
-}
-
-export class Counter extends React.Component<RouteComponentProps<{}>, CounterState> {
+export class Counter extends React.Component {
     constructor() {
         super();
         this.state = { currentCount: 0 };
     }
 
-    public render() {
+    render() {
         return <div>
             <h1>Counter</h1>
 
