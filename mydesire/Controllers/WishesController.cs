@@ -52,6 +52,29 @@ namespace mydesire.Controllers
 
             return View(wish);
         }
+        public async Task<IActionResult> Perform(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var wish = await _context.Wishes
+                .Include(w => w.Perfomer)
+                .Include(w => w.Status)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (wish == null)
+            {
+                return NotFound();
+            }
+
+            wish.Perfomer = await _userManager.GetUserAsync(User);
+            wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Выполняется");
+
+            //TODO: мб сделать спец. страницу, что-то типа "Грац, теперь иди выполняй!" ну или всплывашку такую
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Wishes/Create
         public IActionResult Create()
@@ -70,13 +93,14 @@ namespace mydesire.Controllers
         {
             if (ModelState.IsValid)
             {
-                wish.IssuerId = _userManager.GetUserId(User);
+                wish.Issuer = await _userManager.GetUserAsync(User);
+                wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Ожидает исполнителя");
+
                 _context.Add(wish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
+            //ViewData["StatusSelectList"] = new SelectList(_context.Statuses, "Id", "Name", wish.StatusId);
             return View(wish);
         }
 

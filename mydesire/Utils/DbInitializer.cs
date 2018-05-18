@@ -50,6 +50,7 @@ namespace mydesire.Utils
             {
                 new Status { Name = "Выполнено"},
                 new Status { Name = "Выполняется"},
+                new Status { Name = "Ожидает исполнителя"},
                 new Status { Name = "Не выполнено"}
             };
 
