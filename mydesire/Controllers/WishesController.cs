@@ -67,9 +67,17 @@ namespace mydesire.Controllers
             {
                 return NotFound();
             }
+            // а вдруг какой-то хмырь по ссылке ид перешел, а не со страницы редактирования
+            if (wish.Perfomer != null)
+            {
+                //TODO: сделать нормальную страницу с уведомлением, что желание уже исполняется
+                return RedirectToAction("AccessDenied", "Account");
+            }
 
             wish.Perfomer = await _userManager.GetUserAsync(User);
             wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Выполняется");
+
+            await _context.SaveChangesAsync();
 
             //TODO: мб сделать спец. страницу, что-то типа "Грац, теперь иди выполняй!" ну или всплывашку такую
             return RedirectToAction(nameof(Index));
