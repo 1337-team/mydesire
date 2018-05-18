@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using mydesire.Data;
 using mydesire.Models;
 using mydesire.Utils;
 
@@ -27,7 +28,10 @@ namespace mydesire
                 {
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await RoleInitializer.InitializeAsync(userManager, rolesManager);
+
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+
+                    await DbInitializer.InitializeAsync(userManager, rolesManager, context);
                 }
                 catch (Exception ex)
                 {

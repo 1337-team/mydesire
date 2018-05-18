@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using mydesire.Data;
 using mydesire.Models;
 using System;
 using System.Collections.Generic;
@@ -7,9 +9,18 @@ using System.Threading.Tasks;
 
 namespace mydesire.Utils
 {
-    public class RoleInitializer
+    public class DbInitializer
     {
         public static async Task InitializeAsync(UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        {
+            await InitializeRolesAsync(userManager, roleManager);
+            await InitializeStatusesAsync(context);
+            
+            
+        }
+
+        public static async Task InitializeRolesAsync(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             string adminEmail = "admin@gmail.com";
@@ -31,6 +42,25 @@ namespace mydesire.Utils
                     await userManager.AddToRoleAsync(admin, "admin");
                 }
             }
+        }
+
+        public static async Task InitializeStatusesAsync(ApplicationDbContext context)
+        {
+            var mandatoryStatuses = new List<Status>
+            {
+                new Status { Name = "Выполнено"},
+                new Status { Name = "Выполняется"},
+                new Status { Name = "Не выполнено"}
+            };
+
+            foreach (var status in mandatoryStatuses)
+            {
+                if (await context.Statuses.Where(s => s.Name == status.Name).SingleOrDefaultAsync() == null)
+                {
+                    await context.AddAsync(status);
+                }
+            }
+            await context.SaveChangesAsync();
         }
     }
 }
