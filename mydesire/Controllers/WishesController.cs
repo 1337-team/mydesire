@@ -29,6 +29,7 @@ namespace mydesire.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [AllowAnonymous]
         // GET: Wishes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

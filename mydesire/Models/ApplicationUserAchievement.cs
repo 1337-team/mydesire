@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace mydesire.Models
 {
-    public class UserAchievement
+    public class ApplicationUserAchievement
     {
         public string ApplicationUserId { get; set; }
         public int AchievementId { get; set; }

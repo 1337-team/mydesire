@@ -15,8 +15,10 @@ namespace mydesire.Data
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Status> Statuses { get; set; }
-        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<ApplicationUserAchievement> ApplicationUserAchievements { get; set; }
+        public DbSet<WishCategory> WishCategories { get; set; }
 
+        
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -31,18 +33,47 @@ namespace mydesire.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
-            builder.Entity<UserAchievement>()
+            
+            // Формирование отношения многие-ко-многим между User и Achievement
+            builder.Entity<ApplicationUserAchievement>()
                 .HasKey(ua => new { ua.ApplicationUserId, ua.AchievementId });
 
-            builder.Entity<UserAchievement>()
+            builder.Entity<ApplicationUserAchievement>()
                 .HasOne(ua => ua.ApplicationUser)
-                .WithMany(u => u.UserAchievements)
+                .WithMany(u => u.ApplicationUserAchievements)
                 .HasForeignKey(ua => ua.ApplicationUserId);
 
-            builder.Entity<UserAchievement>()
+            builder.Entity<ApplicationUserAchievement>()
                 .HasOne(ua => ua.Achievement)
-                .WithMany(a => a.UserAchievements)
+                .WithMany(a => a.ApplicationUserAchievements)
                 .HasForeignKey(ua => ua.AchievementId);
+
+            // Формирование отношения многие-ко-многим между Wish и Category
+            builder.Entity<WishCategory>()
+               .HasKey(wc => new { wc.WishId, wc.CategoryId });
+
+            builder.Entity<WishCategory>()
+                .HasOne(wc => wc.Wish)
+                .WithMany(w => w.WishCategories)
+                .HasForeignKey(wc => wc.WishId);
+
+            builder.Entity<WishCategory>()
+                .HasOne(wc => wc.Category)
+                .WithMany(c => c.WishCategories)
+                .HasForeignKey(wc => wc.CategoryId);
+
+            // Формирование отношения вручную между Wish и User, т.к. несколько навигационных свойств
+            builder.Entity<Wish>()
+                .HasOne(w => w.Issuer)
+                .WithMany(au => au.MyWishes)
+                .HasForeignKey(w => w.IssuerId);
+
+            builder.Entity<Wish>()
+                .HasOne(w => w.Perfomer)
+                .WithMany(au => au.MyWishesToPerform)
+                .HasForeignKey(w => w.PerfomerId);
+
+
         }
     }
 }
