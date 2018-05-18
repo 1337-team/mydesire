@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using mydesire.Models;
 
 namespace mydesire.Controllers
 {
+    [Authorize]
     public class WishesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,6 +21,7 @@ namespace mydesire.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Wishes
         public async Task<IActionResult> Index()
         {
@@ -59,7 +62,7 @@ namespace mydesire.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,OpenDate,CloseDate,StatusId,PerfomerId")] Wish wish)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,OpenDate,CloseDate")] Wish wish)
         {
             if (ModelState.IsValid)
             {
