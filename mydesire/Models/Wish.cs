@@ -18,11 +18,18 @@ namespace mydesire.Models
         [DataType(DataType.Date)]
         public DateTime CloseDate { get; set; }
         public int StatusId { get; set; }
-        public virtual IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
+        public IEnumerable<Comment> Comments { get; set; }
         public string PerfomerId { get; set; }
 
         [ForeignKey("PerfomerId")]
         public ApplicationUser Perfomer { get; set; }
+
+        public string IssuerId { get; set; }
+
+        [ForeignKey("IssuerId")]
+        public ApplicationUser Issuer { get; set; }
+
+        public IEnumerable<WishCategory> WishCategories { get; set; }
 
         //public virtual IEnumerable<ApplicationUser> PotentialPerformers { get; set; } = new List<ApplicationUser>();
 

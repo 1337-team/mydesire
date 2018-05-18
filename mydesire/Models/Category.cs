@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace mydesire.Models
 {
-    public class Achievement
+    public class Category
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public double RatingToGain { get; set; }
-        public virtual IEnumerable<ApplicationUserAchievement> ApplicationUserAchievements { get; set; }
+        public IEnumerable<WishCategory> WishCategories { get; set; }
+
     }
 }

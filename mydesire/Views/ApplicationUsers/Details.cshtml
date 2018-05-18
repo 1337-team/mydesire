@@ -1,0 +1,99 @@
+﻿@model mydesire.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Профиль пользователя";
+}
+
+<h2>Мой кабинет</h2>
+
+<div>
+    @*<h4>ApplicationUser</h4>*@
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Rating)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MyWishes)
+            <br />
+            <a asp-area="" asp-controller="Wishes" asp-action="Create">Добавить</a>
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                </tr>
+                @foreach (var item in Model.MyWishes)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MyWishesToPerform)
+            <br />
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Чье желание</th>
+                </tr>
+                @foreach (var item in Model.MyWishesToPerform)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Issuer.Id">
+                            @Html.DisplayFor(modelItem => item.Issuer.UserName)
+                        </a>
+                    </td>
+                </tr>
+                }
+            </table>
+        </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a>
+    @*| <a asp-action="Index">Back to List</a>*@
+</div>

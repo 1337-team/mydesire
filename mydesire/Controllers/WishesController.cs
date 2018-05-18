@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +12,19 @@ using mydesire.Models;
 
 namespace mydesire.Controllers
 {
+    [Authorize]
     public class WishesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public WishesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+            
+        public WishesController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+        [AllowAnonymous]
         // GET: Wishes
         public async Task<IActionResult> Index()
         {
@@ -26,6 +32,7 @@ namespace mydesire.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [AllowAnonymous]
         // GET: Wishes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,6 +52,37 @@ namespace mydesire.Controllers
 
             return View(wish);
         }
+        public async Task<IActionResult> Perform(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var wish = await _context.Wishes
+                .Include(w => w.Perfomer)
+                .Include(w => w.Status)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (wish == null)
+            {
+                return NotFound();
+            }
+            // а вдруг какой-то хмырь по ссылке ид перешел, а не со страницы редактирования
+            if (wish.Perfomer != null)
+            {
+                //TODO: сделать нормальную страницу с уведомлением, что желание уже исполняется
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            wish.Perfomer = await _userManager.GetUserAsync(User);
+            wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Выполняется");
+
+            await _context.SaveChangesAsync();
+
+            //TODO: мб сделать спец. страницу, что-то типа "Грац, теперь иди выполняй!" ну или всплывашку такую
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Wishes/Create
         public IActionResult Create()
@@ -59,16 +97,18 @@ namespace mydesire.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,OpenDate,CloseDate,StatusId,PerfomerId")] Wish wish)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,OpenDate,CloseDate")] Wish wish)
         {
             if (ModelState.IsValid)
             {
+                wish.Issuer = await _userManager.GetUserAsync(User);
+                wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Ожидает исполнителя");
+
                 _context.Add(wish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
+            //ViewData["StatusSelectList"] = new SelectList(_context.Statuses, "Id", "Name", wish.StatusId);
             return View(wish);
         }
 
