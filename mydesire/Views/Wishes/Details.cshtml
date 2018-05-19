@@ -44,20 +44,22 @@
             @Html.DisplayNameFor(model => model.Perfomer)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Perfomer.Id)
+            <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@Model.Perfomer?.Id">
+                @Html.DisplayFor(model => model.Perfomer.UserName)
+            </a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Status)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Status.Id)
+            @Html.DisplayFor(model => model.Status.Name)
         </dd>
     </dl>
 </div>
 <div>
-    @if (Model.PerfomerId != null)
+    @if (Model.PerfomerId == null)
     {
-        <a asp-action="Perform" asp-route-id="@Model.Id">Исполнить</a>
+        <a asp-action="Perform" asp-route-id="@Model.Id">Исполнить |</a>
     }
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

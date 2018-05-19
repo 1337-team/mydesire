@@ -55,10 +55,12 @@
                 @Html.DisplayFor(modelItem => item.CloseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Perfomer.Id)
+                <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Perfomer?.Id">
+                    @Html.DisplayFor(modelItem => item.Perfomer.UserName)
+                </a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status.Id)
+                @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

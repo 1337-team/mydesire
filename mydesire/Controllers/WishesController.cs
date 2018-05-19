@@ -87,8 +87,8 @@ namespace mydesire.Controllers
         // GET: Wishes/Create
         public IActionResult Create()
         {
-            ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id");
+            //ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            //ViewData["CategorySelectList"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -97,10 +97,15 @@ namespace mydesire.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,OpenDate,CloseDate")] Wish wish)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,CloseDate")] Wish wish)
         {
             if (ModelState.IsValid)
             {
+                wish.OpenDate = DateTime.Now.Date;
+
+                if (DateTime.Compare(wish.CloseDate, wish.OpenDate) < 0)
+                    return View(wish);
+
                 wish.Issuer = await _userManager.GetUserAsync(User);
                 wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Ожидает исполнителя");
 
