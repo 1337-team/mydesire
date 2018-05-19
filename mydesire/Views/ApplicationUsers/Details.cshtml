@@ -1,5 +1,5 @@
 ﻿@model mydesire.Models.ApplicationUser
-
+@inject UserManager<ApplicationUser> userManager
 @{
     ViewData["Title"] = "Профиль пользователя";
 }
@@ -30,7 +30,7 @@
         <dd>
             @Html.DisplayFor(model => model.DateOfBirth)
         </dd>
-        
+
         <dt>
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
@@ -47,17 +47,29 @@
                 <tr>
                     <th>Название</th>
                     <th>Описание</th>
+                    <th>Статус</th>
+
                 </tr>
                 @foreach (var item in Model.MyWishes)
                 {
-                    <tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status.Name)
+                    </td>
+                    @if ((userManager.GetUserId(User) == item.IssuerId) && item.Status.Name == "Выполняется")
+                    {
                         <td>
-                            @Html.DisplayFor(modelItem => item.Name)
+                            <a asp-controller="Wishes" asp-action="MarkAsDone"
+                               asp-route-id="@item.Id">Желание выполнено</a>
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>
-                    </tr>
+                    }
+                </tr>
                 }
             </table>
         </dd>
@@ -75,19 +87,19 @@
                 </tr>
                 @foreach (var item in Model.MyWishesToPerform)
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Issuer.Id">
-                            @Html.DisplayFor(modelItem => item.Issuer.UserName)
-                        </a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <a asp-controller="ApplicationUsers" asp-action="Details" asp-route-id="@item.Issuer.Id">
+                                @Html.DisplayFor(modelItem => item.Issuer.UserName)
+                            </a>
+                        </td>
+                    </tr>
                 }
             </table>
         </dd>

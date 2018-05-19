@@ -58,8 +58,13 @@ namespace mydesire.Controllers
 
                 var applicationUser = await _context.ApplicationUsers
                     .Include(u => u.MyWishes)
+                        .ThenInclude(w => w.Status)
+
                     .Include(u => u.MyWishesToPerform)
-                    .ThenInclude(w => w.Issuer)
+                        .ThenInclude(w => w.Issuer)
+                    .Include(u => u.MyWishesToPerform)
+                        .ThenInclude(w => w.Status)
+
                     .SingleOrDefaultAsync(m => m.Id == id);
                 if (applicationUser == null)
                 {
@@ -75,8 +80,7 @@ namespace mydesire.Controllers
             {
                 //if (id != User?.Claims?.Where(c => c?.Type == "nameidentifier").SingleOrDefault().Value)
                 //    return Json("q");
-                if (!(User.HasClaim(c => (c.Type == ClaimTypes.NameIdentifier && c.Value == id)
-                 || (User.IsInRole("admin")))))
+                if (!(_userManager.GetUserId(User) == id) || User.IsInRole("admin"))
                 {
                     return RedirectToAction("AccessDenied", "Account");
                 }
@@ -126,7 +130,7 @@ namespace mydesire.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Details), new { id });
                 }
                 return View(applicationUser);
             }

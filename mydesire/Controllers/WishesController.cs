@@ -86,8 +86,38 @@ namespace mydesire.Controllers
             //TODO: мб сделать спец. страницу, что-то типа "Грац, теперь иди выполняй!" ну или всплывашку такую
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> MarkAsDone(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var wish = await _context.Wishes
+                .Include(w => w.Perfomer)
+                .Include(w => w.Status)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (wish == null)
+            {
+                return NotFound();
+            }
 
+            // а вдруг какой-то хмырь по ссылке ид перешел, а не со страницы редактирования
+            if (wish.IssuerId != _userManager.GetUserId(User))
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+            if (wish.Status.Name != "Выполняется")
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Выполнено");
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+        
         // GET: Wishes/Create
         public IActionResult Create()
         {
@@ -137,8 +167,12 @@ namespace mydesire.Controllers
             {
                 return NotFound();
             }
-            ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
+            if (!(wish.IssuerId == _userManager.GetUserId(User) || User.IsInRole("admin")))
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+            //ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
+            //ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
             return View(wish);
         }
 
@@ -147,7 +181,8 @@ namespace mydesire.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Photo,OpenDate,CloseDate,StatusId,PerfomerId")] Wish wish)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("Id,Name,Description,Photo,OpenDate,CloseDate,StatusId,PerfomerId,CategoryId")] Wish wish)
         {
             if (id != wish.Id)
             {
@@ -174,8 +209,8 @@ namespace mydesire.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
+            //ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", wish.PerfomerId);
+            //ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Id", wish.StatusId);
             return View(wish);
         }
 
