@@ -28,7 +28,10 @@ namespace mydesire.Controllers
         // GET: Wishes
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Wishes.Include(w => w.Perfomer).Include(w => w.Status);
+            var applicationDbContext = _context.Wishes
+                .Include(w => w.Perfomer)
+                .Include(w => w.Status)
+                .Include(w => w.Category);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -44,6 +47,7 @@ namespace mydesire.Controllers
             var wish = await _context.Wishes
                 .Include(w => w.Perfomer)
                 .Include(w => w.Status)
+                .Include(w => w.Category)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (wish == null)
             {
@@ -88,7 +92,8 @@ namespace mydesire.Controllers
         public IActionResult Create()
         {
             //ViewData["PerfomerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            //ViewData["CategorySelectList"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["CategorySelectList"] = new SelectList(_context.Categories, "Id", "Name");
+
             return View();
         }
 
@@ -97,7 +102,7 @@ namespace mydesire.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,CloseDate")] Wish wish)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Photo,CloseDate,CategoryId")] Wish wish)
         {
             if (ModelState.IsValid)
             {
@@ -114,6 +119,8 @@ namespace mydesire.Controllers
                 return RedirectToAction(nameof(Index));
             }
             //ViewData["StatusSelectList"] = new SelectList(_context.Statuses, "Id", "Name", wish.StatusId);
+            ViewData["CategorySelectList"] = new SelectList(_context.Categories, "Id", "Name");
+
             return View(wish);
         }
 

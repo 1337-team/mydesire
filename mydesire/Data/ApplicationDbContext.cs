@@ -17,7 +17,7 @@ namespace mydesire.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<ApplicationUserAchievement> ApplicationUserAchievements { get; set; }
-        public DbSet<WishCategory> WishCategories { get; set; }
+        //public DbSet<WishCategory> WishCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -48,18 +48,18 @@ namespace mydesire.Data
                 .HasForeignKey(ua => ua.AchievementId);
 
             // Формирование отношения многие-ко-многим между Wish и Category
-            builder.Entity<WishCategory>()
-               .HasKey(wc => new { wc.WishId, wc.CategoryId });
+            //builder.Entity<WishCategory>()
+            //   .HasKey(wc => new { wc.WishId, wc.CategoryId });
 
-            builder.Entity<WishCategory>()
-                .HasOne(wc => wc.Wish)
-                .WithMany(w => w.WishCategories)
-                .HasForeignKey(wc => wc.WishId);
+            //builder.Entity<WishCategory>()
+            //    .HasOne(wc => wc.Wish)
+            //    .WithMany(w => w.WishCategories)
+            //    .HasForeignKey(wc => wc.WishId);
 
-            builder.Entity<WishCategory>()
-                .HasOne(wc => wc.Category)
-                .WithMany(c => c.WishCategories)
-                .HasForeignKey(wc => wc.CategoryId);
+            //builder.Entity<WishCategory>()
+            //    .HasOne(wc => wc.Category)
+            //    .WithMany(c => c.WishCategories)
+            //    .HasForeignKey(wc => wc.CategoryId);
 
             // Формирование отношения вручную между Wish и User, т.к. несколько навигационных свойств
             builder.Entity<Wish>()

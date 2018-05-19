@@ -12,21 +12,21 @@
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Photo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.OpenDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CloseDate)
-                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OpenDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CloseDate)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Perfomer)
             </th>
@@ -37,37 +37,56 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OpenDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CloseDate)
-            </td>
-            <td>
-                <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Perfomer?.Id">
-                    @Html.DisplayFor(modelItem => item.Perfomer.UserName)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OpenDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CloseDate)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Perfomer?.Id">
+                        @Html.DisplayFor(modelItem => item.Perfomer.UserName)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@*<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/v/bs/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/datatables.min.css" />*@
+
+<link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.css" />
+
+@section Scripts{
+
+    @*<script type="text/javascript"*@
+            @*src="https://cdn.datatables.net/v/bs/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/cr-1.4.1/fc-3.2.4/fh-3.1.3/datatables.min.js"></script>*@
+
+    <script src="~/lib/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
+    }

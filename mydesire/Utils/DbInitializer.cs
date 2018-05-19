@@ -11,13 +11,13 @@ namespace mydesire.Utils
 {
     public class DbInitializer
     {
-        public static async Task InitializeAsync(UserManager<ApplicationUser> userManager, 
+        public static async Task InitializeAsync(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             await InitializeRolesAsync(userManager, roleManager);
             await InitializeStatusesAsync(context);
-            
-            
+            await InitializCategorissAsync(context);
+
         }
 
         public static async Task InitializeRolesAsync(UserManager<ApplicationUser> userManager,
@@ -59,6 +59,26 @@ namespace mydesire.Utils
                 if (await context.Statuses.Where(s => s.Name == status.Name).SingleOrDefaultAsync() == null)
                 {
                     await context.AddAsync(status);
+                }
+            }
+            await context.SaveChangesAsync();
+        }
+
+        public static async Task InitializCategorissAsync(ApplicationDbContext context)
+        {
+            var mandatoryCategories = new List<Category>
+            {
+                new Category { Name = "Подарок"},
+                new Category { Name = "Прогулка"},
+                new Category { Name = "Сюрприз"},
+                new Category { Name = "Поздравить"}
+            };
+
+            foreach (var category in mandatoryCategories)
+            {
+                if (await context.Categories.Where(s => s.Name == category.Name).SingleOrDefaultAsync() == null)
+                {
+                    await context.AddAsync(category);
                 }
             }
             await context.SaveChangesAsync();

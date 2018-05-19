@@ -38,10 +38,11 @@ namespace mydesire.Models
         [ForeignKey("IssuerId")]
         [Display(Name = "Создатель")]
         public ApplicationUser Issuer { get; set; }
+        public int CategoryId { get; set; }
 
-        public IEnumerable<WishCategory> WishCategories { get; set; }
-
-        //public virtual IEnumerable<ApplicationUser> PotentialPerformers { get; set; } = new List<ApplicationUser>();
+        [Display(Name = "Категория")]
+        public Category Category { get; set; }
+        //public IEnumerable<WishCategory> WishCategories { get; set; }
 
         [Display(Name = "Статус")]
         public Status Status { get; set; }

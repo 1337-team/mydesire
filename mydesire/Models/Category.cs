@@ -13,7 +13,9 @@ namespace mydesire.Models
         [Required]
         [Display(Name = "Название")]
         public string Name { get; set; }
-        public IEnumerable<WishCategory> WishCategories { get; set; }
+
+        public IEnumerable<Wish> Wishes { get; set; }
+        //public IEnumerable<WishCategory> WishCategories { get; set; }
 
     }
 }
