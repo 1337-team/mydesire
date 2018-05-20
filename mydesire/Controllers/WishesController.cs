@@ -112,6 +112,7 @@ namespace mydesire.Controllers
                 return RedirectToAction("AccessDenied", "Account");
             }
 
+            wish.Perfomer.Rating++;
             wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Выполнено");
             await _context.SaveChangesAsync();
 
