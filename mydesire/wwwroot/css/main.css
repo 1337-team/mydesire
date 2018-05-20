@@ -3547,6 +3547,9 @@
 			height: auto;
 			padding: 1rem;
 		}
+		.panel {
+			margin-bottom: 0;
+		}
 
 	}
 
