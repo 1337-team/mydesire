@@ -3555,6 +3555,9 @@
 		#page-wrapper {
 			padding: 0;
 		}
+		.panel {
+			margin-bottom: 0;
+		}
 
 	}
 
