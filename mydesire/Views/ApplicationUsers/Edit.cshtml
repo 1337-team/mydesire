@@ -3,10 +3,10 @@
 @inject IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редактирование пользователя";
 }
 
-<h2>Редактировать</h2>
+<h2>Редактирование пользователя</h2>
 
 <h4>Информация о пользователе</h4>
 
@@ -30,12 +30,11 @@
                 <input asp-for="DateOfBirth" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                @Html.DisplayFor(r => r.Rating);
 
-            </div>
+            @*<div class="form-group">
+            <label asp-for="Rating" class="control-label"></label>
+            @Html.DisplayFor(r => r.Rating);
+        </div>*@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="AccessFailedCount" />
             <input type="hidden" asp-for="ConcurrencyStamp" />

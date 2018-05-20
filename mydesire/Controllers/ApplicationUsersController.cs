@@ -77,9 +77,7 @@ namespace mydesire.Controllers
 
             // GET: ApplicationUsers/Edit/5
             public async Task<IActionResult> Edit(string id)
-            {
-                //if (id != User?.Claims?.Where(c => c?.Type == "nameidentifier").SingleOrDefault().Value)
-                //    return Json("q");
+            {                
                 if (!(_userManager.GetUserId(User) == id || User.IsInRole("admin")))
                 {
                     return RedirectToAction("AccessDenied", "Account");
@@ -102,7 +100,7 @@ namespace mydesire.Controllers
             // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(string id, /*[Bind("Name,Position,DateOfBirth,JobStartDate,Rating")]*/ ApplicationUser applicationUser)
+            public async Task<IActionResult> Edit(string id, ApplicationUser applicationUser)
             {
                 if (id != applicationUser.Id)
                 {
