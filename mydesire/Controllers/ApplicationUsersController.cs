@@ -80,7 +80,7 @@ namespace mydesire.Controllers
             {
                 //if (id != User?.Claims?.Where(c => c?.Type == "nameidentifier").SingleOrDefault().Value)
                 //    return Json("q");
-                if (!(_userManager.GetUserId(User) == id) || User.IsInRole("admin"))
+                if (!(_userManager.GetUserId(User) == id || User.IsInRole("admin")))
                 {
                     return RedirectToAction("AccessDenied", "Account");
                 }
