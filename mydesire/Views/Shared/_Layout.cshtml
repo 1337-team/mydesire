@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
     <title>@ViewData["Title"] - mydesire</title>
 
     <environment include="Development">
@@ -19,59 +19,65 @@
     </environment>
 </head>
 <body>
+    @if (ViewContext.RouteData.Values["controller"].ToString() != "Home") {
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">mydesire</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
-                    <li><a asp-area="" asp-controller="Wishes" asp-action="Index">Желания</a></li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li>
-                            <a asp-area="" asp-route-id="@userManager.GetUserId(User)"
-                               asp-controller="ApplicationUsers" asp-action="Details">Мой профиль</a>
-                        </li>
-                    }
-                    @if (User.IsInRole("admin"))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
-                               aria-haspopup="true" aria-expanded="false">Админ-действия<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a asp-area="" asp-controller="ApplicationUsers"
-                                       asp-action="Index">Все пользователи</a>
-                                </li>
-                                <li>
-                                    <a asp-area="" asp-controller="Roles"
-                                       asp-action="Index">Управление ролями</a>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                    }
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">mydesire</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
+                        <li><a asp-area="" asp-controller="Wishes" asp-action="Index">Желания</a></li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a asp-area="" asp-route-id="@userManager.GetUserId(User)"
+                                asp-controller="ApplicationUsers" asp-action="Details">Мой профиль</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+                                aria-haspopup="true" aria-expanded="false">Админ-действия<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a asp-area="" asp-controller="ApplicationUsers"
+                                        asp-action="Index">Все пользователи</a>
+                                    </li>
+                                    <li>
+                                        <a asp-area="" asp-controller="Roles"
+                                        asp-action="Index">Управление ролями</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
+                        }
 
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
             </div>
+        </nav>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2018 - mydesire</p>
+            </footer>
         </div>
-    </nav>
-    <div class="container body-content">
+    }
+    else {
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - mydesire</p>
-        </footer>
-    </div>
+    }
+    
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -93,7 +99,6 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-
     @RenderSection("Scripts", required: false)
 </body>
 </html>
