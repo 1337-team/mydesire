@@ -9,14 +9,16 @@ namespace mydesire.Models.AccountViewModels
     public class LoginViewModel
     {
         [Required]
+        [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "Пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Запомнить на этом устройстве?")]
         public bool RememberMe { get; set; }
     }
 }
