@@ -1,4 +1,5 @@
 ﻿@model mydesire.Models.Wish
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -21,6 +22,14 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Issuer)
+        </dt>
+        <dd>
+            <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@Model.Perfomer?.Id">
+                @Html.DisplayFor(model => model.Issuer.UserName)
+            </a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Photo)
@@ -57,11 +66,15 @@
     </dl>
 </div>
 <div>
-    @if (Model.PerfomerId == null)
+    @if (Model.PerfomerId == null && Model.IssuerId != UserManager.GetUserId(User))
     {
         <a asp-action="Perform" asp-route-id="@Model.Id">Исполнить |</a>
     }
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("admin") || Model.IssuerId == UserManager.GetUserId(User))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    }
+
+        <a asp-action="Index">| Back to List</a>
 
 </div>

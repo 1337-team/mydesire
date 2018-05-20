@@ -30,6 +30,7 @@ namespace mydesire.Controllers
         {
             var applicationDbContext = _context.Wishes
                 .Include(w => w.Perfomer)
+                .Include(w => w.Issuer)
                 .Include(w => w.Status)
                 .Include(w => w.Category);
             return View(await applicationDbContext.ToListAsync());
@@ -46,6 +47,7 @@ namespace mydesire.Controllers
 
             var wish = await _context.Wishes
                 .Include(w => w.Perfomer)
+                .Include(w => w.Issuer)
                 .Include(w => w.Status)
                 .Include(w => w.Category)
                 .SingleOrDefaultAsync(m => m.Id == id);
@@ -140,7 +142,11 @@ namespace mydesire.Controllers
                 wish.OpenDate = DateTime.Now.Date;
 
                 if (DateTime.Compare(wish.CloseDate, wish.OpenDate) < 0)
+                {
+                    ViewData["CategorySelectList"] = new SelectList(_context.Categories, "Id", "Name");
                     return View(wish);
+
+                }
 
                 wish.Issuer = await _userManager.GetUserAsync(User);
                 wish.Status = await _context.Statuses.SingleOrDefaultAsync(s => s.Name == "Ожидает исполнителя");
@@ -215,6 +221,7 @@ namespace mydesire.Controllers
             return View(wish);
         }
 
+        [Authorize(Roles = "admin")]
         // GET: Wishes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -235,6 +242,7 @@ namespace mydesire.Controllers
             return View(wish);
         }
 
+        [Authorize(Roles = "admin")]
         // POST: Wishes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
