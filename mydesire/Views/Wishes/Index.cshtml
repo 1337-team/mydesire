@@ -7,7 +7,7 @@
 
 <h2>Список желаний</h2>
 
-<p class="pull-right">
+<p>
     <a asp-action="Create">Создать</a>
 </p>
 <table class="table">
@@ -37,57 +37,61 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
-            <th></th>
+            @if (User.IsInRole("admin"))
+            {
+                <th>
+                    Действия
+                </th>
+
+            }
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OpenDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CloseDate)
-            </td>
-            <td>
-                <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Issuer?.Id">
-                    @Html.DisplayFor(modelItem => item.Issuer.UserName)
-                </a>
-            </td>
-            <td>
-                <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Perfomer?.Id">
-                    @Html.DisplayFor(modelItem => item.Perfomer.UserName)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            @if (User.IsInRole("admin"))
-            {
+            <tr>
                 <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
 
-
-                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OpenDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CloseDate)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Issuer?.Id">
+                        @Html.DisplayFor(modelItem => item.Issuer.UserName)
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="ApplicationUsers" asp-route-id="@item.Perfomer?.Id">
+                        @Html.DisplayFor(modelItem => item.Perfomer.UserName)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                @if (User.IsInRole("admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    </td>
 
-            }
+                }
 
-        </tr>
+            </tr>
         }
     </tbody>
 </table>
@@ -105,7 +109,31 @@
     <script src="~/lib/DataTables/datatables.js"></script>
     <script>
         $(document).ready(function () {
-            $('.table').DataTable();
+            $('.table').DataTable(
+                {
+                    "language": {
+                        "processing": "Подождите...",
+                        "search": "Поиск:",
+                        "lengthMenu": "Показать _MENU_ записей",
+                        "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+                        "infoEmpty": "Записи с 0 до 0 из 0 записей",
+                        "infoFiltered": "(отфильтровано из _MAX_ записей)",
+                        "infoPostFix": "",
+                        "loadingRecords": "Загрузка записей...",
+                        "zeroRecords": "Записи отсутствуют.",
+                        "emptyTable": "В таблице отсутствуют данные",
+                        "paginate": {
+                            "first": "Первая",
+                            "previous": "Предыдущая",
+                            "next": "Следующая",
+                            "last": "Последняя"
+                        },
+                        "aria": {
+                            "sortAscending": ": активировать для сортировки столбца по возрастанию",
+                            "sortDescending": ": активировать для сортировки столбца по убыванию"
+                        }
+                    }
+                });
         });
     </script>
 }
